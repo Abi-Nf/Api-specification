@@ -1,0 +1,157 @@
+openapi: 3.0.3
+info:
+  title: "STD22078"
+  description: "This is an Api specification exercise that we do at HEI"
+  version: 1.0.0
+  contact:
+    name: "RALAIVAO Abigail Ny Fiderana"
+    url: "https://github.com/Abi-Nf/Api-specification"
+    email: "hei.abigail.3@gmail.com"
+servers:
+  - url: "http://STD22078"
+paths:
+  /students:
+    get:
+      summary: "get all students that study at HEI"
+      parameters:
+        - in: query
+          name: "group"
+          content:
+            text/plain:
+              example: "H3"
+          required: false
+      responses:
+        200:
+          description: "Ok, found students"
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Student"
+        500:
+          description: "Internal server error"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/InternalError"
+  /student:
+    get:
+      summary: "get student by his STD"
+      parameters:
+        - in: query
+          name: "std"
+          content:
+            text/plain:
+              example: "STD00000"
+          required: true
+      responses:
+        200:
+          description: "Ok, found student"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Student"
+        400:
+          description: "bad request, missing std value"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/NotFound"
+        404:
+          description: "Student not found"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/NotFound"
+    post:
+      summary: "Add new student"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Student"
+      responses:
+        201:
+          description: "new user created successfully, and return the data of user"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Student"
+        400:
+          description: "bad request, missing value in body"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BadRequest"
+        415:
+          description: "Media type not supported"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MediaNotSupported"
+components:
+  schemas:
+    MediaNotSupported:
+      type: object
+      properties:
+        status:
+          type: integer
+          example: 415
+        message:
+          type: string
+          example: Only Json body object is acceptable
+    BadRequest:
+      type: object
+      properties:
+        status:
+          type: integer
+          example: 400
+        message:
+          type: string
+          example: "missing value"
+    NotFound:
+      type: object
+      properties:
+        status:
+          type: integer
+          example: 404
+        message:
+          type: string
+          example: student not found
+    InternalError:
+      type: object
+      properties:
+        status:
+          type: integer
+          format: int64
+          example: 500
+        message:
+          type: string
+          example: internal server error
+    Student:
+      type: object
+      properties:
+        std:
+          type: string
+          example: STD22000
+        firstname:
+          type: string
+          example: John
+        lastname:
+          type: string
+          example: doe
+        email:
+          type: string
+          format: email
+          example: john@example.com
+        group:
+          type: string
+          example: H3
+        class:
+          type: string
+          example: L1
+        birthdate:
+          type: string
+          format: date
+          example: 2000-08-15
