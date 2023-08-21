@@ -57,13 +57,13 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/NotFound"
+                $ref: "#/components/schemas/NotFoundStudent"
         404:
           description: "Student not found"
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/NotFound"
+                $ref: "#/components/schemas/NotFoundStudent"
     post:
       summary: "Add new student"
       requestBody:
@@ -90,8 +90,85 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/MediaNotSupported"
+  /teachers:
+    get:
+      summary: "get all hei teachers"
+      responses:
+        200:
+          description: "find all teachers infos and their functions"
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/teacher"
+                example:
+                  - name: "Mr Ryan"
+                    subject: "API"
+                    SubjectDescription: "Teach how to does API and client-server works generally. Also using great apps like Postman for api tests"
+                  - name: "Mr Lou"
+                    subject: "Sys2"
+                    SubjectDescription: "Teach how does Devices would interconnect each other through the cloud/internet. especially using AWS"
+                  - name: "Mr Toky"
+                    subject: "Prog2"
+                    SubjectDescription: "Teach Java programming language, especially the OOP and using some framework like Spring"
+                  - name: "Mr Sitraka"
+                    subject: "Web2"
+                    SubjectDescription: "Teach the way to make an interactive interface using React.js, also introducing to typescript language"
+                  - name: "Mr Harry"
+                    subject: "Sys1"
+                    SubjectDescription: "Teach how to exploit the system especially Linux for a good usage"
+                  - name: "Mme Sandrine"
+                    subject: "MGT1"
+                    SubjectDescription: "Teach the world of soft skills, Project management using Jira, Trello and so on, and good utils like Github"
+  /teacher:
+    get:
+      summary: "get info about one teacher"
+      description: "get info about a teacher according to query parameter"
+      parameters:
+        - in: query
+          name: "name"
+          content:
+            text/plain:
+              example: "Mr Ryan"
+      responses:
+        200:
+          description: "Ok, found teacher"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/teacher"
+              example:
+                name: "Mr Ryan"
+                subject: "API"
+                SubjectDescription: "Teach how to does API and client-server works generally. Also using great apps like Postman for api tests"
+        404:
+          description: "Teacher name not found"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TeacherNotFound"
+
 components:
   schemas:
+    teacher:
+      type: object
+      properties:
+        name:
+          type: string
+        subject:
+          type: string
+        SubjectDescription:
+          type: string
+    TeacherNotFound:
+      type: object
+      properties:
+        status:
+          type: integer
+          example: 404
+        message:
+          type: string
+          example: teacher info not found
     MediaNotSupported:
       type: object
       properties:
@@ -109,8 +186,8 @@ components:
           example: 400
         message:
           type: string
-          example: "missing value"
-    NotFound:
+          example: missing value
+    NotFoundStudent:
       type: object
       properties:
         status:
