@@ -12,6 +12,8 @@ servers:
 paths:
   /students:
     get:
+      tags:
+        - students
       summary: "get all students that study at HEI"
       parameters:
         - in: query
@@ -35,8 +37,12 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/InternalError"
+
+
   /student:
     get:
+      tags:
+        - student
       summary: "get student by his STD"
       parameters:
         - in: query
@@ -65,6 +71,8 @@ paths:
               schema:
                 $ref: "#/components/schemas/NotFoundStudent"
     post:
+      tags:
+        - student
       summary: "Add new student"
       requestBody:
         content:
@@ -90,8 +98,57 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/MediaNotSupported"
+    delete:
+      tags:
+        - student
+      summary: "delete a student by his STD"
+      parameters:
+        - in: query
+          name: "std"
+          content:
+            text/plain:
+              example: "STD00000"
+          required: true
+      responses:
+        200:
+          description: "deleted success and return the deleted student"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Student"
+        400:
+          description: "Bad request"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BadRequest"
+    put:
+      tags:
+        - student
+      summary: "update student info by id"
+      parameters:
+        - in: query
+          name: std
+          content:
+            text/plain:
+              example: std20000
+        - in: query
+          name: newData
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Student"
+      responses:
+        200:
+          description: "updated student"
+          content:
+              application/json:
+                schema:
+                  $ref: "#/components/schemas/Student"
   /teachers:
     get:
+      tags:
+        - teachers
       summary: "get all hei teachers"
       responses:
         200:
@@ -105,24 +162,32 @@ paths:
                 example:
                   - name: "Mr Ryan"
                     subject: "API"
+                    duration: 2h
                     SubjectDescription: "Teach how to does API and client-server works generally. Also using great apps like Postman for api tests"
                   - name: "Mr Lou"
                     subject: "Sys2"
+                    duration: 2h
                     SubjectDescription: "Teach how does Devices would interconnect each other through the cloud/internet. especially using AWS"
                   - name: "Mr Toky"
                     subject: "Prog2"
+                    duration: 2h
                     SubjectDescription: "Teach Java programming language, especially the OOP and using some framework like Spring"
                   - name: "Mr Sitraka"
+                    duration: 2h
                     subject: "Web2"
                     SubjectDescription: "Teach the way to make an interactive interface using React.js, also introducing to typescript language"
                   - name: "Mr Harry"
+                    duration: 2h
                     subject: "Sys1"
                     SubjectDescription: "Teach how to exploit the system especially Linux for a good usage"
                   - name: "Mme Sandrine"
+                    duration: 2h
                     subject: "MGT1"
                     SubjectDescription: "Teach the world of soft skills, Project management using Jira, Trello and so on, and good utils like Github"
   /teacher:
     get:
+      tags:
+        - student
       summary: "get info about one teacher"
       description: "get info about a teacher according to query parameter"
       parameters:
@@ -148,7 +213,29 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/TeacherNotFound"
-
+    put:
+      tags:
+        - teacher
+      summary: "update teacher info by name"
+      parameters:
+        - in: query
+          name: name
+          content:
+            text/plain:
+              example: "Mr Toky"
+        - in: query
+          name: newData
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/teacher"
+      responses:
+        200:
+          description: "Ok, updated teacher and show the updated teacher"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/teacher"
 components:
   schemas:
     teacher:
@@ -159,6 +246,8 @@ components:
         subject:
           type: string
         SubjectDescription:
+          type: string
+        duration:
           type: string
     TeacherNotFound:
       type: object
